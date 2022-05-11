@@ -40,7 +40,7 @@ const resize = async (
 
   // check whether the image exists
   try {
-    fs.accessSync(srcFilePath);
+    await fs.promises.access(srcFilePath);
   } catch (error) {
     res.send('ERROR: Requested file does not exist.');
     return;
@@ -48,17 +48,17 @@ const resize = async (
 
   // check whether the dstDir exist
   try {
-    fs.accessSync(dstDir);
+    await fs.promises.access(dstDir);
   } catch (error) {
-    fs.mkdirSync(dstDir);
+    await fs.promises.mkdir(dstDir);
   }
 
   // resize the image
+  // check whether the resized image has been created
   try {
-    await resizeImage(srcFilePath, width, height, dstFilePath);
+    await fs.promises.access(dstFilePath);
   } catch {
-    res.send('ERROR: Image cannot be processed.');
-    return;
+    await resizeImage(srcFilePath, width, height, dstFilePath);
   }
 
   res.sendFile(dstFilePath);
