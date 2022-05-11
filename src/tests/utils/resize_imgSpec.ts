@@ -6,9 +6,12 @@ describe('Test resize image', () => {
     const fileName = 'fjord';
     const width = 200;
     const height = 200;
-    const srcFilePath = path.join(__dirname + '../../../../assets/full/' + fileName + '.jpg');
+    const srcFilePath = path.join(
+      __dirname + '../../../../assets/full/' + fileName + '.jpg'
+    );
     const dstDir: string = path.join(__dirname + '../../../../assets/thumb/');
-    const dstFilePath: string = dstDir + fileName + '_w' + width + '_h' + height + '.jpg';
+    const dstFilePath: string =
+      dstDir + fileName + '_w' + width + '_h' + height + '.jpg';
     await resizeImage(srcFilePath, width, height, dstFilePath);
 
     expect(dstFilePath).toBeTruthy();

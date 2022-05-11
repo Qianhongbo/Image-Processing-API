@@ -3,7 +3,10 @@ import fs from 'fs';
 import path from 'path';
 import resizeImage from './resize_img';
 
-const resize = async (req: express.Request, res: express.Response) => {
+const resize = async (
+  req: express.Request,
+  res: express.Response
+): Promise<void> => {
   // if the input of query is not complete
   // report error...
   if (
@@ -14,6 +17,7 @@ const resize = async (req: express.Request, res: express.Response) => {
     res.send('ERROR: The input query is not enough.');
     return;
   }
+
   const fileName = req.query.filename as string;
   const width = parseInt(req.query.width as string);
   const height = parseInt(req.query.height as string);
@@ -21,6 +25,12 @@ const resize = async (req: express.Request, res: express.Response) => {
     res.send('ERROR: Please enter the width and height of the image.');
     return;
   }
+
+  if (width < 0 || height < 0) {
+    res.send('ERROR: The width or height cannot be negative.');
+    return;
+  }
+
   const srcFilePath: string = path.join(
     __dirname + '../../../assets/full/' + fileName + '.jpg'
   );
@@ -43,9 +53,15 @@ const resize = async (req: express.Request, res: express.Response) => {
     fs.mkdirSync(dstDir);
   }
 
-  await resizeImage(srcFilePath, width, height, dstFilePath);
+  // resize the image
+  try {
+    await resizeImage(srcFilePath, width, height, dstFilePath);
+  } catch {
+    res.send('ERROR: Image cannot be processed.');
+    return;
+  }
+
   res.sendFile(dstFilePath);
-  return;
 };
 
 export default resize;

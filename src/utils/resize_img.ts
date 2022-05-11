@@ -5,8 +5,7 @@ const resizeImage = async (
   width: number,
   height: number,
   dstFilePath: string
-) => {
-  console.log('resizing image...');
+): Promise<void> => {
   await sharp(srcFilePath)
     .resize(width, height)
     .toFormat('jpeg')
